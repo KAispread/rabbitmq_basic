@@ -1,0 +1,10 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: kai
+    password: kai1234
+  application:
+    name: HelloMessageQueue
+server:
+  port: 8080
