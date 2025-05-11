@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@RestController
+//@RestController
 public class MessageController {
 
     private final WorkQueueProducer producer;
