@@ -3,7 +3,7 @@ package com.rabbitmq.hello.step3;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class NotificationPublisher {
 
     private final RabbitTemplate rabbitTemplate;

@@ -6,7 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
-@Controller
+//@Controller
 public class StompController {
 
     private final SimpMessagingTemplate messagingTemplate;
