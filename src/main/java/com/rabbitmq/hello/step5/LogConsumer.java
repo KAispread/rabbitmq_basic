@@ -6,6 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogConsumer {
 
+    @RabbitListener(queues = RabbitMQConfig.ALL_QUEUE)
+    public void consumeAll(String message) {
+        System.out.println("[LOG]를 받음 : " + message);
+    }
+
     @RabbitListener(queues = RabbitMQConfig.ERROR_QUEUE)
     public void consumeError(String message) {
         System.out.println("[ERROR]를 받음 : " + message);
