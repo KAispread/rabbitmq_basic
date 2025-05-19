@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/api/logs")
+//@RestController
+//@RequestMapping("/api/logs")
 public class LogController {
 
     private final CustomExceptionHandler customExceptionHandler;

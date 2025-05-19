@@ -3,7 +3,7 @@ package com.rabbitmq.hello.step5;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class LogConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.ALL_QUEUE)

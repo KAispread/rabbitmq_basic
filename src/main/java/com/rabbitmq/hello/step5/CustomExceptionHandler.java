@@ -2,7 +2,7 @@ package com.rabbitmq.hello.step5;
 
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class CustomExceptionHandler {
 
     private final LogPublisher logPublisher;
