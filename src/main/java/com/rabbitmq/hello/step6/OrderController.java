@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/order")
+//@RestController
+//@RequestMapping("/api/order")
 public class OrderController {
 
     private final OrderProducer orderProducer;
