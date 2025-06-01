@@ -1,52 +1,39 @@
 package com.rabbitmq.hello.step6;
 
-import com.rabbitmq.client.Channel;
-import java.io.IOException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+@RequiredArgsConstructor
+//@Component
 public class OrderConsumer {
 
-    private static final int MAX_RETRY = 3; // max retry count
-    private static int retryCount = 0;
+    private final RabbitTemplate rabbitTemplate;
+    private final RetryTemplate retryTemplate;
 
-    @RabbitListener(queues = RabbitMQConfig.ORDER_COMPLETED, containerFactory = "rabbitListenerContainerFactory")
-    public void processOrder(String message, Channel channel, @Header("amqp_deliveryTag") long tag) {
-        try {
-            // fail case
-            if ("fail".equalsIgnoreCase(message)) {
-                handleFail(message, channel, tag);
+    //@RabbitListener(queues = RabbitMQConfig.ORDER_COMPLETED)
+    public void consume(String message) {
+        retryTemplate.execute(context -> {
+            try {
+                System.out.println("# received message : " + message + " # retry : " + context.getRetryCount());
+
+                if ("fail".equalsIgnoreCase(message)) {
+                    throw new RuntimeException();
+                }
+                System.out.println("# message retry success : " + message);
+            } catch (Exception e) {
+                if (context.getRetryCount() >= 2) {
+                    rabbitTemplate.convertAndSend(
+                        RabbitMQConfig.DLX,
+                        RabbitMQConfig.DEAD_LETTER_ROUTING_KEY,
+                        message);
+                } else {
+                    throw e;
+                }
             }
-            // success case
-            System.out.println("# succeed : " + message);
-            channel.basicAck(tag, false);
-            retryCount = 0;
-        } catch (Exception e) {
-            doBasicReject(channel, tag, e);
-        }
-    }
-
-    private void doBasicReject(Channel channel, long tag, Exception e) {
-        System.err.println("# raise error : " + e.getMessage());
-        try {
-            // basicReject when fail
-            channel.basicReject(tag, true);
-        } catch (IOException ex) {
-            System.err.println("# fail & reject message : " + ex.getMessage());
-        }
-    }
-
-    private void handleFail(String message, Channel channel, long tag) throws IOException {
-        if (retryCount < MAX_RETRY) {
-            System.err.println("#### Fail & Retry = " + retryCount);
-            retryCount++;
-            throw new RuntimeException(message);
-        }
-
-        System.err.println("#### Over handled MAX RETRY COUNT");
-        retryCount = 0;
-        channel.basicNack(tag, false, false);
+            return null;
+        });
     }
 }
